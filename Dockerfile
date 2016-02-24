@@ -15,14 +15,20 @@ RUN apt-get -qqy update && apt-get install unzip curl -qqy
 ADD https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip /tmp/consul.zip
 ADD https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_web_ui.zip /tmp/consul_ui.zip
 
+RUN mkdir /opt/consul
+RUN mkdir /opt/consul/webui
+RUN mkdir /opt/consul/config
+
 # unzip consul to /opt/consul/consul
-RUN cd /usr/sbin && unzip /tmp/consul.zip && chmod +x consul && rm /tmp/consul.zip
+RUN cd /opt/consul && unzip /tmp/consul.zip && chmod +x consul && rm /tmp/consul.zip
+RUN ln -s /opt/consul/consul /usr/sbin/consul
 
 # unzip webui to /opt/consul/webui/
-RUN cd /webui && unzip /tmp/consul_ui.zip && rm /tmp/consul_ui.zip
+RUN cd /opt/consul/webui && unzip /tmp/consul_ui.zip && rm /tmp/consul_ui.zip
 
-RUN mkdir /etc/consul/
-ADD consul.json /etc/consul/consul.sample.json
+# default config
+ADD consul.json /opt/consul/config/consul.sample.json
 
-CMD test "$(ls /config/consul.json)" || cp /etc/consul/consul.sample.json /config/consul.json; \
+CMD test "$(ls /config/consul.json)" || cp /opt/consul/config/consul.sample.json /config/consul.json; \
+    test "$(ls /webui/index.html)" || cp -R /opt/consul/webui/* /webui; \
     /usr/sbin/consul agent -config-dir=/config/
