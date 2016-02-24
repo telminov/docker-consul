@@ -1,0 +1,15 @@
+consul:
+  image: telminov/consul
+  ports:
+    - 0.0.0.0:53:53/udp
+    - 0.0.0.0:8300:8300
+    - 0.0.0.0:8301:8301
+    - 0.0.0.0:8301:8301/udp
+    - 0.0.0.0:8302:8302
+    - 0.0.0.0:8302:8302/udp
+    - 0.0.0.0:8400:8400
+    - 0.0.0.0:8500:8500
+  command: consul agent -config-dir=/config/ -server -bootstrap-expect 1 -dc vagrant_dc -advertise 127.0.0.1
+  volumes:
+    - ./config/:/config/
+#    - ./data:/data/

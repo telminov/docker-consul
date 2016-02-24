@@ -1,6 +1,6 @@
 {
     "data_dir": "/data",
-    "ui_dir": "/webui",
+    "ui_dir": "/opt/consul/webui",
     "client_addr": "0.0.0.0",
     "ports": {
         "dns": 53

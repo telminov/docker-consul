@@ -6,7 +6,6 @@ MAINTAINER telminov@soft-way.biz
 EXPOSE 53/udp 8300 8301 8301/udp 8302 8302/udp 8400 8500
 
 VOLUME /data
-VOLUME /webui
 VOLUME /config
 
 RUN apt-get -qqy update && apt-get install unzip curl -qqy
@@ -27,8 +26,7 @@ RUN ln -s /opt/consul/consul /usr/sbin/consul
 RUN cd /opt/consul/webui && unzip /tmp/consul_ui.zip && rm /tmp/consul_ui.zip
 
 # default config
-ADD consul.json /opt/consul/config/consul.sample.json
+ADD config/consul.json /opt/consul/config/consul.sample.json
 
 CMD test "$(ls /config/consul.json)" || cp /opt/consul/config/consul.sample.json /config/consul.json; \
-    test "$(ls /webui/index.html)" || cp -R /opt/consul/webui/* /webui; \
     /usr/sbin/consul agent -config-dir=/config/
